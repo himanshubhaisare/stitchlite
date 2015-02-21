@@ -6,7 +6,8 @@ error_reporting(E_ALL);
 
 define('APP_PATH', realpath('..'));
 
-try {
+$debug = new \Phalcon\Debug();
+$debug->listen();
 
     /**
      * Read the configuration
@@ -30,7 +31,7 @@ try {
     $app = new Micro($di);
 
     /**
-     * Incude Application
+     * Include Application
      */
     include APP_PATH . '/app.php';
 
@@ -38,7 +39,3 @@ try {
      * Handle the request
      */
     $app->handle();
-
-} catch (\Exception $e) {
-    echo $e->getMessage();
-}
