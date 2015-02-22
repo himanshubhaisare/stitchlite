@@ -242,8 +242,8 @@ class Variant extends \Phalcon\Mvc\Model
             'sku' => 'sku', 
             'quantity' => 'inventory_quantity',
             'price' => 'price', 
-            'shopify_id' => 'option2',
-            'product_id' => 'option3'
+            'shopify_id' => 'shopify_id',
+            'product_id' => 'product_id'
         );
     }
 

@@ -54,15 +54,16 @@ try  {
     echo '</pre>';
 
 } catch (ShopifyApiException $e) {
-    /*
-     $e->getMethod() -> http method (GET, POST, PUT, DELETE)
-     $e->getPath() -> path of failing request
-     $e->getResponseHeaders() -> actually response headers from failing request
-     $e->getResponse() -> curl response object
-     $e->getParams() -> optional data that may have been passed that caused the failure
-
-    */
-    echo "Shopify Exception : method {$e->getMethod()}, path {$e->getPath()}, headers {$e->getResponseHeaders()}, response {$e->getResponse()}, params {$e->getParams()}, message {$e->getMessage()}";
+    $response = array(
+        'response'  => $e->getResponse(),
+        'method'    => $e->getMethod(),
+        'path'      => $e->getPath(),
+        'headers'   => $e->getResponseHeaders(),
+        'params'    => $e->getParams()
+    );
+    echo '<pre>';
+    print_r($response);
+    echo '</pre>';
 } catch (ShopifyCurlException $e) {
     // $e->getMessage() returns value of curl_errno() and $e->getCode() returns value of curl_ error()
     echo "Curl Exception : method {$e->getMessage()}";

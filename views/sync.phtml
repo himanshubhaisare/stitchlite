@@ -35,7 +35,7 @@ try  {
             $response[] = $sc->call('PUT', "/admin/products/{$product->getShopifyId()}.json", $params);
         } else {
             //create product on shopify
-            $variants = Variant::find("option3 = '" . $product->getShopifyId() . "'");
+            $variants = Variant::find("product_id = '" . $product->getShopifyId() . "'");
             $params = array(
                 'product' => array(
                     'title' => $product->getProductName(),
