@@ -7,6 +7,12 @@ use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 
 $di = new FactoryDefault();
 
+
+/**
+ * Pass config around the app
+ */
+$di['config'] = $config;
+
 /**
  * Sets the view component
  */

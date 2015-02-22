@@ -12,7 +12,6 @@ $app->get('/shopify', function () use ($app) {
 });
 
 $app->post('/shopify', function () use ($app) {
-    $shop = $app->request->getJsonRawBody();
     echo $app['view']->render('shopify');
 });
 
