@@ -4,16 +4,23 @@ require_once APP_PATH . '/library/shopify/shopify.php';
 require_once APP_PATH . '/models/Product.php';
 require_once APP_PATH . '/models/Variant.php';
 
-/** @var Product[] $products */
-$products = Product::find();
 $response = array();
 
-foreach($products as $product) {
-    $response[$product->getId()] = $product->toArray();
-    $variants = Variant::find("product_id = '" . $product->getShopifyId() . "'");
-    $response[$product->getId()]['variants'] = $variants->toArray();
+if(isset($id)) {
+    /** @var Product[] $products */
+    $products = Product::findByShopifyId($id);
+} else {
+    /** @var Product[] $products */
+    $products = Product::find();
 }
 
-echo '<pre>';
-echo json_encode($response, JSON_PRETTY_PRINT);
-echo '</pre>';
+if($products) {
+    foreach ($products as $product) {
+        $response[$product->getId()] = $product->toArray();
+        $variants = Variant::find("product_id = '" . $product->getShopifyId() . "'");
+        $response[$product->getId()]['variants'] = $variants->toArray();
+    }
+    echo json_encode($response, JSON_PRETTY_PRINT);
+} else {
+    echo json_encode("no products found with id $id");
+}

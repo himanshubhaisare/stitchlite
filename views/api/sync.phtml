@@ -47,9 +47,14 @@ try  {
         }
     }
 
-    echo '<pre>';
-    echo json_encode($response, JSON_PRETTY_PRINT);
-    echo '</pre>';
+    if($_GET) {
+        echo '<pre>';
+        echo json_encode($response, JSON_PRETTY_PRINT);
+        echo '</pre>';
+    }
+    if($_POST) {
+        return json_encode($response, JSON_PRETTY_PRINT);
+    }
 
 } catch (ShopifyApiException $e) {
     $response = array(
@@ -59,9 +64,19 @@ try  {
         'headers'   => $e->getResponseHeaders(),
         'params'    => $e->getParams()
     );
-    echo '<pre>';
-    echo json_encode($response, JSON_PRETTY_PRINT);
-    echo '</pre>';
+
+    if($_GET) {
+        echo json_encode($response, JSON_PRETTY_PRINT);
+    }
+    if($_POST) {
+        return json_encode($response, JSON_PRETTY_PRINT);
+    }
 } catch (ShopifyCurlException $e) {
-    echo "Curl Exception : method {$e->getMessage()}";
+    $response = "Curl Exception : method {$e->getMessage()}";
+    if($_GET) {
+        echo json_encode($response, JSON_PRETTY_PRINT);
+    }
+    if($_POST) {
+        return json_encode($response, JSON_PRETTY_PRINT);
+    }
 }
