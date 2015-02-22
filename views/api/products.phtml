@@ -1,0 +1,19 @@
+<?php
+
+require_once APP_PATH . '/library/shopify/shopify.php';
+require_once APP_PATH . '/models/Product.php';
+require_once APP_PATH . '/models/Variant.php';
+
+/** @var Product[] $products */
+$products = Product::find();
+$response = array();
+
+foreach($products as $product) {
+    $response[$product->getId()] = $product->toArray();
+    $variants = Variant::find("product_id = '" . $product->getShopifyId() . "'");
+    $response[$product->getId()]['variants'] = $variants->toArray();
+}
+
+echo '<pre>';
+echo json_encode($response, JSON_PRETTY_PRINT);
+echo '</pre>';

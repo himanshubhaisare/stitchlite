@@ -48,7 +48,7 @@ try  {
     }
 
     echo '<pre>';
-    print_r($response);
+    echo json_encode($response, JSON_PRETTY_PRINT);
     echo '</pre>';
 
 } catch (ShopifyApiException $e) {
@@ -60,9 +60,8 @@ try  {
         'params'    => $e->getParams()
     );
     echo '<pre>';
-    print_r($response);
+    echo json_encode($response, JSON_PRETTY_PRINT);
     echo '</pre>';
 } catch (ShopifyCurlException $e) {
-    // $e->getMessage() returns value of curl_errno() and $e->getCode() returns value of curl_ error()
     echo "Curl Exception : method {$e->getMessage()}";
 }

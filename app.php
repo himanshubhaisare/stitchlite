@@ -26,6 +26,7 @@ $app->get('/api/sync', function () use ($app) {
     echo $app['view']->render('api/sync');
 });
 
+// get all the products from stitchlite db
 $app->get('/api/products', function () use ($app) {
     echo $app['view']->render('api/products');
 });
