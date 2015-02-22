@@ -21,9 +21,9 @@ $app->get('/shopify/products', function () use ($app) {
     echo $app['view']->render('products');
 });
 
-//Retrieves all robots
-$app->get('/api/robots', function() {
-
+// sync all products. i.e. stitchlite
+$app->get('/shopify/sync', function () use ($app) {
+    echo $app['view']->render('products');
 });
 
 //Searches for robots with $name in their name
@@ -33,11 +33,6 @@ $app->get('/api/robots/search/{name}', function($name) {
 
 //Retrieves robots based on primary key
 $app->get('/api/robots/{id:[0-9]+}', function($id) {
-
-});
-
-//Adds a new robot
-$app->post('/api/robots', function() {
 
 });
 

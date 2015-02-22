@@ -1,0 +1,36 @@
+<?php
+/**
+ * https://github.com/himanshubhaisare/ohShopify.php forked from cmcdonaldca/ohShopify.php
+ */
+require_once APP_PATH . '/library/shopify/shopify.php';
+
+$shopDomain = $this->config->shopify->shop_domain;
+$apiKey     = $this->config->shopify->api_key;
+$secret     = $this->config->shopify->secret;
+$password   = $this->config->shopify->password;
+$token      = "";
+
+// For private apps (you should never make private apps anyways):
+$sc = new ShopifyClient($shopDomain, $token, $apiKey, $password, true);
+
+try  {
+    // Get all products
+    $products = $sc->call('GET', '/admin/products.json', array('published_status'=>'published'));
+
+    // Store them in stitchlite db
+    foreach($products as $product) {
+
+    }
+
+} catch (ShopifyApiException $e) {
+    /*
+     $e->getMethod() -> http method (GET, POST, PUT, DELETE)
+     $e->getPath() -> path of failing request
+     $e->getResponseHeaders() -> actually response headers from failing request
+     $e->getResponse() -> curl response object
+     $e->getParams() -> optional data that may have been passed that caused the failure
+
+    */
+} catch (ShopifyCurlException $e) {
+    // $e->getMessage() returns value of curl_errno() and $e->getCode() returns value of curl_ error()
+}
