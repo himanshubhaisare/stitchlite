@@ -23,7 +23,7 @@ try  {
     foreach($products as $product) {
         // find this product in shopify
         $matchFound = $sc->call('GET', "/admin/products/{$product->getShopifyId()}.json");
-        if(!$matchFound) {
+        if($matchFound) {
             //update product on shopify
             $params = array(
                 'product' => array(

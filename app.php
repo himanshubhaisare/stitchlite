@@ -23,7 +23,11 @@ $app->get('/shopify/products', function () use ($app) {
 
 // sync all products from stitchlite to shopify
 $app->get('/api/sync', function () use ($app) {
-    echo $app['view']->render('sync');
+    echo $app['view']->render('api/sync');
+});
+
+$app->get('/api/products', function () use ($app) {
+    echo $app['view']->render('api/products');
 });
 
 
