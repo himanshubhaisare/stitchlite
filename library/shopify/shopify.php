@@ -1,13 +1,42 @@
 <?php
+
+/**
+ * Class ShopifyClient
+ */
 class ShopifyClient {
 
+    /**
+     * @var
+     */
     private $shop_domain;
+    /**
+     * @var
+     */
     private $token;
+    /**
+     * @var
+     */
     private $api_key;
+    /**
+     * @var
+     */
     private $secret;
+    /**
+     * @var bool
+     */
     private $is_private_app;
+    /**
+     * @var null
+     */
     private $last_response_headers = null;
 
+    /**
+     * @param $shop_domain
+     * @param $token
+     * @param $api_key
+     * @param $secret
+     * @param bool $is_private_app
+     */
     public function __construct($shop_domain, $token, $api_key, $secret, $is_private_app=false) {
         $this->name = "ShopifyClient";
         $this->shop_domain = $shop_domain;
@@ -17,29 +46,57 @@ class ShopifyClient {
         $this->is_private_app = $is_private_app;
     }
 
+    /**
+     * @return string
+     */
     public function getAppInstallUrl() {
         return "http://{$this->shop_domain}/admin/api/auth?api_key={$this->api_key}";
     }
 
+    /**
+     * @param $timestamp
+     * @param $signature
+     * @return bool
+     */
     public function isAppInstalled($timestamp, $signature) {
         return (md5("{$this->secret}shop={$this->shop_domain}t={$this->token}timestamp={$timestamp}") === $signature);
     }
 
+    /**
+     * @return int
+     * @throws Exception
+     */
     public function callsMade()
     {
         return $this->shopApiCallLimitParam(0);
     }
 
+    /**
+     * @return int
+     * @throws Exception
+     */
     public function callLimit()
     {
         return $this->shopApiCallLimitParam(1);
     }
 
+    /**
+     * @param $response_headers
+     * @return int
+     */
     public function callsLeft($response_headers)
     {
         return $this->callLimit() - $this->callsMade();
     }
 
+    /**
+     * @param $method
+     * @param $path
+     * @param array $params
+     * @return array|mixed
+     * @throws ShopifyApiException
+     * @throws ShopifyCurlException
+     */
     public function call($method, $path, $params=array())
     {
         $password = $this->is_private_app ? $this->secret : md5($this->secret.$this->token);
@@ -59,6 +116,15 @@ class ShopifyClient {
         return (is_array($response) and (count($response) > 0)) ? array_shift($response) : $response;
     }
 
+    /**
+     * @param $method
+     * @param $url
+     * @param string $query
+     * @param string $payload
+     * @param array $request_headers
+     * @return mixed
+     * @throws ShopifyCurlException
+     */
     private function curlHttpApiRequest($method, $url, $query='', $payload='', $request_headers=array())
     {
         $url = $this->curlAppendQuery($url, $query);
@@ -77,6 +143,11 @@ class ShopifyClient {
         return $message_body;
     }
 
+    /**
+     * @param $url
+     * @param $query
+     * @return string
+     */
     private function curlAppendQuery($url, $query)
     {
         if (empty($query)) return $url;
@@ -84,6 +155,12 @@ class ShopifyClient {
         else return "$url?$query";
     }
 
+    /**
+     * @param $ch
+     * @param $method
+     * @param $payload
+     * @param $request_headers
+     */
     private function curlSetopts($ch, $method, $payload, $request_headers)
     {
         curl_setopt($ch, CURLOPT_HEADER, true);
@@ -112,6 +189,10 @@ class ShopifyClient {
         }
     }
 
+    /**
+     * @param $message_headers
+     * @return array
+     */
     private function curlParseHeaders($message_headers)
     {
         $header_lines = preg_split("/\r\n|\n|\r/", $message_headers);
@@ -127,6 +208,11 @@ class ShopifyClient {
         return $headers;
     }
 
+    /**
+     * @param $index
+     * @return int
+     * @throws Exception
+     */
     private function shopApiCallLimitParam($index)
     {
         if ($this->last_response_headers == null)
@@ -138,15 +224,44 @@ class ShopifyClient {
     }
 }
 
+/**
+ * Class ShopifyCurlException
+ */
 class ShopifyCurlException extends Exception { }
+
+/**
+ * Class ShopifyApiException
+ */
 class ShopifyApiException extends Exception
 {
+    /**
+     * @var string
+     */
     protected $method;
+    /**
+     * @var int
+     */
     protected $path;
+    /**
+     * @var Exception
+     */
     protected $params;
+    /**
+     * @var
+     */
     protected $response_headers;
+    /**
+     * @var
+     */
     protected $response;
 
+    /**
+     * @param string $method
+     * @param int $path
+     * @param Exception $params
+     * @param $response_headers
+     * @param $response
+     */
     function __construct($method, $path, $params, $response_headers, $response)
     {
         $this->method = $method;
@@ -158,9 +273,28 @@ class ShopifyApiException extends Exception
         parent::__construct($response_headers['http_status_message'], $response_headers['http_status_code']);
     }
 
+    /**
+     * @return string
+     */
     function getMethod() { return $this->method; }
+
+    /**
+     * @return int
+     */
     function getPath() { return $this->path; }
+
+    /**
+     * @return Exception
+     */
     function getParams() { return $this->params; }
+
+    /**
+     * @return mixed
+     */
     function getResponseHeaders() { return $this->response_headers; }
+
+    /**
+     * @return mixed
+     */
     function getResponse() { return $this->response; }
 }

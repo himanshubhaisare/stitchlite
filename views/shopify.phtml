@@ -2,16 +2,38 @@
 /**
  * https://github.com/himanshubhaisare/ohShopify.php forked from cmcdonaldca/ohShopify.php
  */
-require_once APP_PATH . '/library/ohShopify/shopify.php';
+require_once APP_PATH . '/library/shopify/shopify.php';
 
 $shopDomain = $this->config->shopify->shop_domain;
 $apiKey     = $this->config->shopify->api_key;
 $secret     = $this->config->shopify->secret;
+$token      = "";
 
-$sc = new ShopifyClient($shopDomain, $token, $apiKey, $secret);
+// if they posted the form with the shop name
+if(isset($_POST['shop'])) {
 
-// this is how to get the Authorize URL
-$url = $sc->getAppInstallUrl();
+    // Step 1: get the shopname from the user and redirect the user to the
+    // shopify authorization page where they can choose to authorize this app
+    $shop = isset($_POST['shop']) ? $_POST['shop'] : $_GET['shop'];
+    $shopifyClient = new ShopifyClient($shop, "", $apiKey, $secret);
 
-// this is how you can check if the currrent request is authorized
-$isAuthorized = $sc->isAppInstalled($timestamp, $sig);
+    // redirect to authorize url
+    header("Location: " . $shopifyClient->getAppInstallUrl());
+    exit;
+}
+?>
+<p>Install this app in a shop to get access to its private admin data.</p>
+
+<p style="padding-bottom: 1em;">
+    <span class="hint">Don&rsquo;t have a shop to install your app in handy? <a href="https://app.shopify.com/services/partners/api_clients/test_shops">Create a test shop.</a></span>
+</p>
+
+<form action="" method="post">
+    <label for='shop'><strong>The URL of the Shop</strong>
+        <span class="hint">(enter it exactly like this: myshop.myshopify.com)</span>
+    </label>
+    <p>
+        <input id="shop" name="shop" size="45" type="text" value="" />
+        <input name="commit" type="submit" value="Install" />
+    </p>
+</form>
