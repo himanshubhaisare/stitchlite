@@ -16,24 +16,11 @@ $response   = array();
 $sc = new ShopifyClient($shopDomain, $token, $apiKey, $password, true);
 
 try  {
-    // Get all products
-    $shopifyProducts = $sc->call('GET', '/admin/products.json', array('published_status'=>'published'));
-
-    // Store them in stitchlite db
-    foreach($shopifyProducts as $shopifyProduct) {
-        $variants = $shopifyProduct['variants'];
-        foreach($variants as $variant) {
-            $product       = new Product();
-            $product->setProductName($variant['title']);
-            $product->setSku($variant['sku']);
-            $product->setPrice($variant['price']);
-            $product->setQuantity($variant['inventory_quantity']);
-            if ($product->create() == false) {
-                $response[$variant['id']] = "Can't save product {$variant['sku']}";
-            } else {
-                $response[$variant['id']] = "product {$variant['sku']} saved";
-            }
-        }
+    // Get all products from stitchlite db
+    $products = Product::find();
+    foreach($products as $product) {
+        // find this product in shopify
+        $matchFound = $sc->call('GET', '/admin/products.json', array('published_status'=>'published'));
     }
     echo '<pre>';
     print_r($response);

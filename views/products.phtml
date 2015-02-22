@@ -3,6 +3,7 @@
  * https://github.com/himanshubhaisare/ohShopify.php forked from cmcdonaldca/ohShopify.php
  */
 require_once APP_PATH . '/library/shopify/shopify.php';
+require_once APP_PATH . '/models/Product.php';
 
 $shopDomain = $this->config->shopify->shop_domain;
 $apiKey     = $this->config->shopify->api_key;
@@ -16,10 +17,23 @@ $sc = new ShopifyClient($shopDomain, $token, $apiKey, $password, true);
 
 try  {
     // Get all products
-    $products = $sc->call('GET', '/admin/products.json', array('published_status'=>'published'));
-    foreach($products as $product) {
+    $shopifyProducts = $sc->call('GET', '/admin/products.json', array('published_status'=>'published'));
+
+    // Store them in stitchlite db
+    foreach($shopifyProducts as $shopifyProduct) {
+        $variants = $shopifyProduct['variants'];
         foreach($variants as $variant) {
-            $response[$variant['id']] = $variant['sku'];
+            $product       = new Product();
+            $product->setShopifyId($variant['id']);
+            $product->setProductName($variant['title']);
+            $product->setSku($variant['sku']);
+            $product->setPrice($variant['price']);
+            $product->setQuantity($variant['inventory_quantity']);
+            if ($product->create() == false) {
+                $response[$variant['id']] = "Can't save product {$variant['sku']}";
+            } else {
+                $response[$variant['id']] = "product {$variant['sku']} saved";
+            }
         }
     }
 

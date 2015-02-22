@@ -34,6 +34,12 @@ class Product extends \Phalcon\Mvc\Model
     protected $price;
 
     /**
+     *
+     * @var integer
+     */
+    protected $shopify_id;
+
+    /**
      * Method to set the value of field product_name
      *
      * @param string $product_name
@@ -99,6 +105,14 @@ class Product extends \Phalcon\Mvc\Model
     }
 
     /**
+     * @param int $shopifyId
+     */
+    public function setShopifyId($shopifyId)
+    {
+        $this->shopify_id = $shopifyId;
+    }
+
+    /**
      * Returns the value of field product_name
      *
      * @return string
@@ -149,6 +163,14 @@ class Product extends \Phalcon\Mvc\Model
     }
 
     /**
+     * @return int
+     */
+    public function getShopifyId()
+    {
+        return $this->shopify_id;
+    }
+
+    /**
      * @return Product[]
      */
     public static function find($parameters = array())
@@ -174,7 +196,8 @@ class Product extends \Phalcon\Mvc\Model
             'id' => 'id', 
             'sku' => 'sku', 
             'quantity' => 'quantity', 
-            'price' => 'price'
+            'price' => 'price',
+            'shopify_id' => 'shopify_id'
         );
     }
 
