@@ -4,6 +4,7 @@
  */
 require_once APP_PATH . '/library/shopify/shopify.php';
 require_once APP_PATH . '/models/Product.php';
+require_once APP_PATH . '/models/Variant.php';
 
 $shopDomain = $this->config->shopify->shop_domain;
 $apiKey     = $this->config->shopify->api_key;
@@ -18,13 +19,31 @@ $sc = new ShopifyClient($shopDomain, $token, $apiKey, $password, true);
 try  {
     // Get all products from stitchlite db
     $products = Product::find();
+    /** @var Product $product */
     foreach($products as $product) {
         // find this product in shopify
-        $matchFound = $sc->call('GET', "/admin/products/#{$product->getShopifyId()}.json");
-        if($matchFound) {
-            //update
+        $matchFound = $sc->call('GET', "/admin/products/{$product->getShopifyId()}.json");
+        if(!$matchFound) {
+            //update product on shopify
+            $params = array(
+                'product' => array(
+                    'title' => $product->getProductName(),
+                    'id'    => $product->getShopifyId(),
+                    'type'  => $product->getType()
+                )
+            );
+            $response[] = $sc->call('PUT', "/admin/products/{$product->getShopifyId()}.json", $params);
         } else {
-            //create
+            //create product on shopify
+            $variants = Variant::find("option3 = '" . $product->getShopifyId() . "'");
+            $params = array(
+                'product' => array(
+                    'title' => $product->getProductName(),
+                    'type'  => $product->getType(),
+                    'variants' => $variants->toArray()
+                )
+            );
+                $response[] = $sc->call('POST', "/admin/products.json", $params);
         }
     }
 
@@ -33,14 +52,16 @@ try  {
     echo '</pre>';
 
 } catch (ShopifyApiException $e) {
-    /*
-     $e->getMethod() -> http method (GET, POST, PUT, DELETE)
-     $e->getPath() -> path of failing request
-     $e->getResponseHeaders() -> actually response headers from failing request
-     $e->getResponse() -> curl response object
-     $e->getParams() -> optional data that may have been passed that caused the failure
-    */
-    echo "Shopify Exception : method {$e->getMethod()}, path {$e->getPath()}, headers {$e->getResponseHeaders()}, response {$e->getReponse()}, params {$e->getParams()}";
+    $response = array(
+        'response'  => $e->getResponse(),
+        'method'    => $e->getMethod(),
+        'path'      => $e->getPath(),
+        'headers'   => $e->getResponseHeaders(),
+        'params'    => $e->getParams()
+    );
+    echo '<pre>';
+    print_r($response);
+    echo '</pre>';
 } catch (ShopifyCurlException $e) {
     // $e->getMessage() returns value of curl_errno() and $e->getCode() returns value of curl_ error()
     echo "Curl Exception : method {$e->getMessage()}";

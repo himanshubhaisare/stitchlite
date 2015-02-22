@@ -62,7 +62,7 @@ try  {
      $e->getParams() -> optional data that may have been passed that caused the failure
 
     */
-    echo "Shopify Exception : method {$e->getMethod()}, path {$e->getPath()}, headers {$e->getResponseHeaders()}, response {$e->getReponse()}, params {$e->getParams()}";
+    echo "Shopify Exception : method {$e->getMethod()}, path {$e->getPath()}, headers {$e->getResponseHeaders()}, response {$e->getResponse()}, params {$e->getParams()}, message {$e->getMessage()}";
 } catch (ShopifyCurlException $e) {
     // $e->getMessage() returns value of curl_errno() and $e->getCode() returns value of curl_ error()
     echo "Curl Exception : method {$e->getMessage()}";

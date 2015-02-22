@@ -136,6 +136,27 @@ class Product extends \Phalcon\Mvc\Model
     }
 
     /**
+     * Initialize method for model.
+     */
+    public function initialize()
+    {
+        $this->setSource('Product');
+        $this->hasMany('id', 'Variant', 'product_id', array(
+            'alias' => 'Variant'
+        ));
+    }
+
+    /**
+     * Returns related variants
+     *
+     * @param null $params
+     * @return \Phalcon\Mvc\Model\ResultsetInterface
+     */
+    public function getVariants($params = null) {
+        return $this->getRelated('Variant', $params);
+    }
+
+    /**
      * Independent Column Mapping.
      */
     public function columnMap()

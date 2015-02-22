@@ -223,18 +223,27 @@ class Variant extends \Phalcon\Mvc\Model
     }
 
     /**
+     * Initialize method for model.
+     */
+    public function initialize()
+    {
+        $this->setSource('Variant');
+        $this->belongsTo('shopify_id', 'Product', 'product_id');
+    }
+
+    /**
      * Independent Column Mapping.
      */
     public function columnMap()
     {
         return array(
-            'product_name' => 'product_name', 
-            'id' => 'id', 
+            'product_name' => 'title',
+            'id' => 'barcode',
             'sku' => 'sku', 
-            'quantity' => 'quantity', 
+            'quantity' => 'inventory_quantity',
             'price' => 'price', 
-            'shopify_id' => 'shopify_id', 
-            'product_id' => 'product_id'
+            'shopify_id' => 'option2',
+            'product_id' => 'option3'
         );
     }
 
