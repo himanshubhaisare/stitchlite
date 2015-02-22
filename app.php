@@ -23,7 +23,7 @@ $app->get('/shopify/products', function () use ($app) {
 
 // sync all products. i.e. stitchlite
 $app->get('/shopify/sync', function () use ($app) {
-    echo $app['view']->render('products');
+    echo $app['view']->render('sync');
 });
 
 //Searches for robots with $name in their name

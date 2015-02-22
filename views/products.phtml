@@ -9,6 +9,7 @@ $apiKey     = $this->config->shopify->api_key;
 $secret     = $this->config->shopify->secret;
 $password   = $this->config->shopify->password;
 $token      = "";
+$response   = array();
 
 // For private apps (you should never make private apps anyways):
 $sc = new ShopifyClient($shopDomain, $token, $apiKey, $password, true);
@@ -16,33 +17,15 @@ $sc = new ShopifyClient($shopDomain, $token, $apiKey, $password, true);
 try  {
     // Get all products
     $products = $sc->call('GET', '/admin/products.json', array('published_status'=>'published'));
-
-    // Create a new recurring charge
-    $charge = array
-    (
-        "recurring_application_charge"=>array
-        (
-            "price"=>10.0,
-            "name"=>"Super Duper Plan",
-            "return_url"=>"http://super-duper.shopifyapps.com",
-            "test"=>true
-        )
-    );
-
-    try
-    {
-        $recurring_application_charge = $sc->call('POST', '/admin/recurring_application_charges.json', $charge);
-
-        // API call limit helpers
-        echo $sc->callsMade(); // 2
-        echo $sc->callsLeft($response_headers); // 498
-        echo $sc->callLimit($response_headers); // 500
-
+    foreach($products as $product) {
+        foreach($variants as $variant) {
+            $response[$variant['id']] = $variant['sku'];
+        }
     }
-    catch (ShopifyApiException $e)
-    {
-        // If you're here, either HTTP status code was >= 400 or response contained the key 'errors'
-    }
+
+    echo '<pre>';
+    print_r($response);
+    echo '</pre>';
 
 } catch (ShopifyApiException $e) {
     /*
@@ -53,6 +36,8 @@ try  {
      $e->getParams() -> optional data that may have been passed that caused the failure
 
     */
+    echo "Shopify Exception : method {$e->getMethod()}, path {$e->getPath()}, headers {$e->getResponseHeaders()}, response {$e->getReponse()}, params {$e->getParams()}";
 } catch (ShopifyCurlException $e) {
     // $e->getMessage() returns value of curl_errno() and $e->getCode() returns value of curl_ error()
+    echo "Curl Exception : method {$e->getMessage()}";
 }

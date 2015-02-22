@@ -3,24 +3,41 @@
  * https://github.com/himanshubhaisare/ohShopify.php forked from cmcdonaldca/ohShopify.php
  */
 require_once APP_PATH . '/library/shopify/shopify.php';
+require_once APP_PATH . '/models/Product.php';
 
 $shopDomain = $this->config->shopify->shop_domain;
 $apiKey     = $this->config->shopify->api_key;
 $secret     = $this->config->shopify->secret;
 $password   = $this->config->shopify->password;
 $token      = "";
+$response   = array();
 
 // For private apps (you should never make private apps anyways):
 $sc = new ShopifyClient($shopDomain, $token, $apiKey, $password, true);
 
 try  {
     // Get all products
-    $products = $sc->call('GET', '/admin/products.json', array('published_status'=>'published'));
+    $shopifyProducts = $sc->call('GET', '/admin/products.json', array('published_status'=>'published'));
 
     // Store them in stitchlite db
-    foreach($products as $product) {
-
+    foreach($shopifyProducts as $shopifyProduct) {
+        $variants = $shopifyProduct['variants'];
+        foreach($variants as $variant) {
+            $product       = new Product();
+            $product->setProductName($variant['title']);
+            $product->setSku($variant['sku']);
+            $product->setPrice($variant['price']);
+            $product->setQuantity($variant['inventory_quantity']);
+            if ($product->create() == false) {
+                $response[$variant['id']] = "Can't save product {$variant['sku']}";
+            } else {
+                $response[$variant['id']] = "product {$variant['sku']} saved";
+            }
+        }
     }
+    echo '<pre>';
+    print_r($response);
+    echo '</pre>';
 
 } catch (ShopifyApiException $e) {
     /*
@@ -29,8 +46,9 @@ try  {
      $e->getResponseHeaders() -> actually response headers from failing request
      $e->getResponse() -> curl response object
      $e->getParams() -> optional data that may have been passed that caused the failure
-
     */
+    echo "Shopify Exception : method {$e->getMethod()}, path {$e->getPath()}, headers {$e->getResponseHeaders()}, response {$e->getReponse()}, params {$e->getParams()}";
 } catch (ShopifyCurlException $e) {
     // $e->getMessage() returns value of curl_errno() and $e->getCode() returns value of curl_ error()
+    echo "Curl Exception : method {$e->getMessage()}";
 }
