@@ -20,8 +20,14 @@ try  {
     $products = Product::find();
     foreach($products as $product) {
         // find this product in shopify
-        $matchFound = $sc->call('GET', '/admin/products.json', array('published_status'=>'published'));
+        $matchFound = $sc->call('GET', "/admin/products/#{$product->getShopifyId()}.json");
+        if($matchFound) {
+            //update
+        } else {
+            //create
+        }
     }
+
     echo '<pre>';
     print_r($response);
     echo '</pre>';

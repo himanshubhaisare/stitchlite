@@ -5,33 +5,9 @@ class Product extends \Phalcon\Mvc\Model
 
     /**
      *
-     * @var string
-     */
-    protected $product_name;
-
-    /**
-     *
      * @var integer
      */
     protected $id;
-
-    /**
-     *
-     * @var string
-     */
-    protected $sku;
-
-    /**
-     *
-     * @var integer
-     */
-    protected $quantity;
-
-    /**
-     *
-     * @var integer
-     */
-    protected $price;
 
     /**
      *
@@ -40,17 +16,16 @@ class Product extends \Phalcon\Mvc\Model
     protected $shopify_id;
 
     /**
-     * Method to set the value of field product_name
      *
-     * @param string $product_name
-     * @return $this
+     * @var string
      */
-    public function setProductName($product_name)
-    {
-        $this->product_name = $product_name;
+    protected $product_name;
 
-        return $this;
-    }
+    /**
+     *
+     * @var string
+     */
+    protected $type;
 
     /**
      * Method to set the value of field id
@@ -66,60 +41,42 @@ class Product extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Method to set the value of field sku
+     * Method to set the value of field shopify_id
      *
-     * @param string $sku
+     * @param integer $shopify_id
      * @return $this
      */
-    public function setSku($sku)
+    public function setShopifyId($shopify_id)
     {
-        $this->sku = $sku;
+        $this->shopify_id = $shopify_id;
 
         return $this;
     }
 
     /**
-     * Method to set the value of field quantity
+     * Method to set the value of field product_name
      *
-     * @param integer $quantity
+     * @param string $product_name
      * @return $this
      */
-    public function setQuantity($quantity)
+    public function setProductName($product_name)
     {
-        $this->quantity = $quantity;
+        $this->product_name = $product_name;
 
         return $this;
     }
 
     /**
-     * Method to set the value of field price
+     * Method to set the value of field type
      *
-     * @param integer $price
+     * @param string $type
      * @return $this
      */
-    public function setPrice($price)
+    public function setType($type)
     {
-        $this->price = $price;
+        $this->type = $type;
 
         return $this;
-    }
-
-    /**
-     * @param int $shopifyId
-     */
-    public function setShopifyId($shopifyId)
-    {
-        $this->shopify_id = $shopifyId;
-    }
-
-    /**
-     * Returns the value of field product_name
-     *
-     * @return string
-     */
-    public function getProductName()
-    {
-        return $this->product_name;
     }
 
     /**
@@ -133,41 +90,33 @@ class Product extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Returns the value of field sku
-     *
-     * @return string
-     */
-    public function getSku()
-    {
-        return $this->sku;
-    }
-
-    /**
-     * Returns the value of field quantity
+     * Returns the value of field shopify_id
      *
      * @return integer
-     */
-    public function getQuantity()
-    {
-        return $this->quantity;
-    }
-
-    /**
-     * Returns the value of field price
-     *
-     * @return integer
-     */
-    public function getPrice()
-    {
-        return $this->price;
-    }
-
-    /**
-     * @return int
      */
     public function getShopifyId()
     {
         return $this->shopify_id;
+    }
+
+    /**
+     * Returns the value of field product_name
+     *
+     * @return string
+     */
+    public function getProductName()
+    {
+        return $this->product_name;
+    }
+
+    /**
+     * Returns the value of field type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 
     /**
@@ -192,12 +141,10 @@ class Product extends \Phalcon\Mvc\Model
     public function columnMap()
     {
         return array(
-            'product_name' => 'product_name', 
             'id' => 'id', 
-            'sku' => 'sku', 
-            'quantity' => 'quantity', 
-            'price' => 'price',
-            'shopify_id' => 'shopify_id'
+            'shopify_id' => 'shopify_id', 
+            'product_name' => 'product_name', 
+            'type' => 'type'
         );
     }
 

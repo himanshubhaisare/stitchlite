@@ -16,35 +16,16 @@ $app->post('/shopify', function () use ($app) {
     echo $app['view']->render('shopify');
 });
 
-// get all products
+// get all products from shopify and store them into stitchlite db
 $app->get('/shopify/products', function () use ($app) {
     echo $app['view']->render('products');
 });
 
-// sync all products. i.e. stitchlite
+// sync all products from stitchlite to shopify
 $app->get('/api/sync', function () use ($app) {
     echo $app['view']->render('sync');
 });
 
-//Searches for robots with $name in their name
-$app->get('/api/robots/search/{name}', function($name) {
-
-});
-
-//Retrieves robots based on primary key
-$app->get('/api/robots/{id:[0-9]+}', function($id) {
-
-});
-
-//Updates robots based on primary key
-$app->put('/api/robots/{id:[0-9]+}', function() {
-
-});
-
-//Deletes robots based on primary key
-$app->delete('/api/robots/{id:[0-9]+}', function() {
-
-});
 
 /**
  * Not found handler

@@ -4,6 +4,7 @@
  */
 require_once APP_PATH . '/library/shopify/shopify.php';
 require_once APP_PATH . '/models/Product.php';
+require_once APP_PATH . '/models/Variant.php';
 
 $shopDomain = $this->config->shopify->shop_domain;
 $apiKey     = $this->config->shopify->api_key;
@@ -19,20 +20,31 @@ try  {
     // Get all products
     $shopifyProducts = $sc->call('GET', '/admin/products.json', array('published_status'=>'published'));
 
-    // Store them in stitchlite db
+    // Store products into stitchlite db
     foreach($shopifyProducts as $shopifyProduct) {
-        $variants = $shopifyProduct['variants'];
-        foreach($variants as $variant) {
-            $product       = new Product();
-            $product->setShopifyId($variant['id']);
-            $product->setProductName($variant['title']);
-            $product->setSku($variant['sku']);
-            $product->setPrice($variant['price']);
-            $product->setQuantity($variant['inventory_quantity']);
-            if ($product->create() == false) {
-                $response[$variant['id']] = "Can't save product {$variant['sku']}";
+        $product       = new Product();
+        $product->setProductName($shopifyProduct['title']);
+        $product->setShopifyId($shopifyProduct['id']);
+        $product->setType($shopifyProduct['product_type']);
+        if ($product->create() == false) {
+            $response[$shopifyProduct['id']] = "Can't save product {$shopifyProduct['sku']}";
+        } else {
+            $response[$shopifyProduct['id']] = "product {$shopifyProduct['title']} saved";
+        }
+        $shopifyVariants = $shopifyProduct['variants'];
+        // Store variants into stitchlite db
+        foreach($shopifyVariants as $shopifyVariant) {
+            $variant       = new Variant();
+            $variant->setProductName($shopifyVariant['title']);
+            $variant->setSku($shopifyVariant['sku']);
+            $variant->setPrice($shopifyVariant['price']);
+            $variant->setQuantity($shopifyVariant['inventory_quantity']);
+            $variant->setShopifyId($shopifyVariant['id']);
+            $variant->setProductId($shopifyProduct['id']);
+            if ($variant->create() == false) {
+                $response[$shopifyVariant['id']] = "Can't save variant {$shopifyVariant['title']} of product {$shopifyProduct['title']}";
             } else {
-                $response[$variant['id']] = "product {$variant['sku']} saved";
+                $response[$shopifyVariant['id']] = "variant {$shopifyVariant['title']} of product {$shopifyProduct['title']} saved";
             }
         }
     }
