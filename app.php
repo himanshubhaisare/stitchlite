@@ -7,12 +7,18 @@ $app->get('/', function () use ($app) {
     echo $app['view']->render('index');
 });
 
+// authentication
 $app->get('/shopify', function () use ($app) {
     echo $app['view']->render('shopify');
 });
 
 $app->post('/shopify', function () use ($app) {
     echo $app['view']->render('shopify');
+});
+
+// get all products
+$app->get('/shopify/products', function () use ($app) {
+    echo $app['view']->render('products');
 });
 
 //Retrieves all robots
