@@ -7,6 +7,10 @@ $app->get('/', function () use ($app) {
     echo $app['view']->render('index');
 });
 
+$app->get('/shopify', function () use ($app) {
+    echo $app['view']->render('shopify');
+});
+
 //Retrieves all robots
 $app->get('/api/robots', function() {
 

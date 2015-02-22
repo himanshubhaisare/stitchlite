@@ -9,33 +9,33 @@ define('APP_PATH', realpath('..'));
 $debug = new \Phalcon\Debug();
 $debug->listen();
 
-    /**
-     * Read the configuration
-     */
-    $config = new \Phalcon\Config\Adapter\Ini(__DIR__ . "/../config/config.ini");
+/**
+ * Read the configuration
+ */
+$config = new \Phalcon\Config\Adapter\Ini(__DIR__ . "/../config/config.ini");
 
-    /**
-     * Include Services
-     */
-    include APP_PATH . '/config/services.php';
+/**
+ * Include Services
+ */
+include APP_PATH . '/config/services.php';
 
-    /**
-     * Include Autoloader
-     */
-    include APP_PATH . '/config/loader.php';
+/**
+ * Include Autoloader
+ */
+include APP_PATH . '/config/loader.php';
 
-    /**
-     * Starting the application
-     * Assign service locator to the application
-     */
-    $app = new Micro($di);
+/**
+ * Starting the application
+ * Assign service locator to the application
+ */
+$app = new Micro($di);
 
-    /**
-     * Include Application
-     */
-    include APP_PATH . '/app.php';
+/**
+ * Include Application
+ */
+include APP_PATH . '/app.php';
 
-    /**
-     * Handle the request
-     */
-    $app->handle();
+/**
+ * Handle the request
+ */
+$app->handle();
