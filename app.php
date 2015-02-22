@@ -11,6 +11,11 @@ $app->get('/shopify', function () use ($app) {
     echo $app['view']->render('shopify');
 });
 
+$app->post('/shopify', function () use ($app) {
+    $shop = $app->request->getJsonRawBody();
+    echo $app['view']->render('shopify');
+});
+
 //Retrieves all robots
 $app->get('/api/robots', function() {
 
