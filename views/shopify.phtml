@@ -4,7 +4,11 @@
  */
 require_once APP_PATH . '/library/ohShopify/shopify.php';
 
-$sc = new ShopifyClient($shop_domain, $token, $api_key, $secret);
+$shopDomain = $this->config->shopify->shop_domain;
+$apiKey     = $this->config->shopify->api_key;
+$secret     = $this->config->shopify->secret;
+
+$sc = new ShopifyClient($shopDomain, $token, $apiKey, $secret);
 
 // this is how to get the Authorize URL
 $url = $sc->getAppInstallUrl();
